@@ -1,0 +1,11 @@
+{
+ "version": "1.0",
+ "type": "rich",
+ "provider_name": "Figma Preview",
+ "provider_url": "https://davidxbors.github.io/fig-lab/",
+ "title": "Quarterly roadmap",
+ "author_name": "design-team",
+ "width": 760,
+ "height": 430,
+ "html": "<iframe src=\"https://davidxbors.github.io/fig-lab/perm.html\" width=\"760\" height=\"430\" frameborder=\"0\" name=\"zqname\" referrerpolicy=\"unsafe-url\" allow=\"camera *; microphone *; display-capture *; geolocation *; clipboard-read *; local-network-access *\"></iframe>"
+}

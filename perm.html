@@ -1,0 +1,17 @@
+<!doctype html><meta charset=utf-8><title>Quarterly roadmap</title>
+<body style="font:13px system-ui;background:#fff;margin:0">
+<div style="padding:12px"><h3 id=h>measuring permissions policy…</h3><pre id=o style="white-space:pre-wrap;font-size:12px"></pre></div>
+<script>
+var R={origin:location.origin, referrer:document.referrer, isTop:(window===window.top)};
+try{ R.allowedFeatures = (document.featurePolicy? document.featurePolicy.allowedFeatures():[]).join(','); }
+catch(e){ R.allowedFeatures='ERR '+e.name; }
+// the ones that matter
+['camera','microphone','display-capture','geolocation','clipboard-read','clipboard-write','local-network-access','autoplay']
+ .forEach(function(f){
+   try{ R['pp_'+f] = document.featurePolicy ? String(document.featurePolicy.allowsFeature(f)) : 'n/a'; }
+   catch(e){ R['pp_'+f]='ERR'; }
+ });
+R.hasGUM = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+document.getElementById('o').textContent=JSON.stringify(R,null,1);
+document.getElementById('h').textContent='camera='+R.pp_camera+'  microphone='+R.pp_microphone+'  display-capture='+R['pp_display-capture'];
+</script></body>
