@@ -1,0 +1,12 @@
+<!doctype html><meta charset=utf-8><title>Totally unrelated blog</title>
+<body style="font:16px system-ui;padding:30px">
+<h1>An unrelated third-party website</h1>
+<p>This page silently embeds a Figma file. No click required.</p>
+<iframe id=f width="700" height="400" style="border:1px solid #ccc"
+ src="https://www.figma.com/embed?embed_host=probe&url=https%3A%2F%2Fwww.figma.com%2Fboard%2Fcj8VGr96yE06E5Z4YCdDO2%2FUntitled"></iframe>
+<pre id=o></pre>
+<script>
+const log=[];
+addEventListener('message',e=>{log.push(e.origin+' :: '+(typeof e.data==='object'?JSON.stringify(e.data):e.data));
+  document.getElementById('o').textContent=log.join('\n');});
+</script></body>
