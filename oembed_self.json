@@ -1,0 +1,11 @@
+{
+ "version": "1.0",
+ "type": "rich",
+ "provider_name": "Figma Preview",
+ "provider_url": "https://davidxbors.github.io/fig-lab/",
+ "title": "Team dashboard",
+ "author_name": "design-team",
+ "width": 900,
+ "height": 520,
+ "html": "<iframe src=\"https://www.figma.com/files/recent\" width=\"900\" height=\"520\" frameborder=\"0\"></iframe>"
+}
